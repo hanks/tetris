@@ -66,6 +66,17 @@ local function main()
 
         return spriteDog
     end
+    
+    -- create game layer
+    local function createGameLayer()
+        local gameLayer = CCLayer:create()
+        
+        -- add in game layer background
+        local bg = CCSprite:create("backscreen00.png")
+        bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+        gameLayer:addChild(bg)
+        return gameLayer
+    end
 
     -- create farm
     local function createLayerFarm()
@@ -195,8 +206,8 @@ local function main()
 
     -- run
     local sceneGame = CCScene:create()
-    sceneGame:addChild(createLayerFarm())
-    sceneGame:addChild(createLayerMenu())
+    sceneGame:addChild(createGameLayer())
+    --sceneGame:addChild(createLayerMenu())
     CCDirector:sharedDirector():runWithScene(sceneGame)
 end
 
