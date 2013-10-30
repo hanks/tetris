@@ -17,23 +17,22 @@ local blockType = {
 -- Block class
 Block = {}
 Block.__index = Block
-function Block:new(curRow, curCol)
+function Block:new(centerRow, centerCol)
     local new_obj = {}
-    setmetable(new_obj, self)
+    setmetatable(new_obj, self)
     
     -- init position parameters
-    new_obj.curRow = curRow
-    new_obj.curCol = curCol
+    new_obj.centerRow = centerRow
+    new_obj.centerCol = centerCol
     new_obj.diffRow = {}
     new_obj.diffCol = {}
     
     -- use random to init type
     local type = math.random(7)
-
     -- init offset
-    for i = 1, 4 do
-        new_obj.diffRow[i] = blockType[type][i][0]
-        new_obj.diffCol[i] = blockType[type][i][1]
+    for i = 0, 3 do
+        new_obj.diffRow[i] = blockType[type][i + 1][1]
+        new_obj.diffCol[i] = blockType[type][i + 1][2]
     end
 
     return new_obj
@@ -88,17 +87,10 @@ function __G__TRACKBACK__(msg)
 end
 
 local cclog = function(...)
-    print(string.format(...))
+    -- print(string.format(...))
+    print(tostring(...))
 end
 
-local function initStateArray()
-    for row = 0, MAX_ROW - 1 do
-        stateArray[row] = {}
-        for col = 1, MAX_COL do
-            stateArray[row][col] = 0
-        end
-    end
-end
 
 local function resetStateArray()
     for row = 0, MAX_ROW - 1 do
@@ -118,22 +110,31 @@ local function resetGhostBlock()
     end
 end
 
+local function initStateArray()
+    -- mark top, left and right side to 1 
+    -- to make as bound
+    for row = 0, MAX_ROW do
+        stateArray[row] = {}
+        for col = 0, MAX_COL + 2 do
+            stateArray[row][col] = 0
+        end
+    end
+
+    -- top bound
+    for i = 0, MAX_COL + 1 do
+        stateArray[MAX_ROW][i] = 1
+    end
+
+    -- left and right side bound
+    for i = 0, MAX_ROW - 1 do
+        stateArray[i][0] = 1
+        stateArray[i][MAX_COL + 1] = 1
+    end
+end
+
+
 -- create game layer
 local function createGameLayer()
-    local gameLayer = CCLayer:create()
-
-    -- get screen size
-    local visibleSize = CCDirector:sharedDirector():getVisibleSize()
-    local origin = CCDirector:sharedDirector():getVisibleOrigin()
-        
-    -- add in game layer background
-    local bg = CCSprite:create("backscreen00.png")
-    bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
-    gameLayer:addChild(bg)
-
-    -- handing touch events
-    local touchBeginPoint = nil
-
     ----------------------------
     ---- method definition -----
     ----------------------------
@@ -143,9 +144,44 @@ local function createGameLayer()
 
     end
 
+    local function isGameOver()
+        gameOver = false
+        for i = 0, 3 do
+            tmpRow = curBlock.centerRow + curBlock.diffRow[i]
+            tmpCol = curBlock.centerCol + curBlock.diffCol[i]
+            if stateArray[tmpRow][tmpCol] == 1 then
+                gameOver = true
+                break
+            end
+        end
+        return gameOver
+    end
+
+    local function checkGameOver()
+        if isGameOver() then
+            cclog("game over")
+        end
+    end
+
+    local function genNextBlock()
+        curBlock = nextBlock
+        nextBlock = Block:new(INIT_ROW, INIT_COL)
+        checkGameOver()
+    end
+
     -- init game
     local function initGame()
-    
+        -- init state array
+        initStateArray()
+        
+        ghostBlock = Block:new(INIT_ROW, INIT_COL)
+        nextBlock = Block:new(INIT_ROW, INIT_COL)
+
+        -- generate next block
+        genNextBlock()
+
+        -- update stateArray
+        
     end
 
     -- add touch event callback
@@ -178,6 +214,26 @@ local function createGameLayer()
             return onTouchEnded(x, y)
         end
     end
+
+    ------------------------
+    ---- Game Logic  -------
+    ------------------------
+    local gameLayer = CCLayer:create()
+
+    -- get screen size
+    local visibleSize = CCDirector:sharedDirector():getVisibleSize()
+    local origin = CCDirector:sharedDirector():getVisibleOrigin()
+        
+    -- add in game layer background
+    local bg = CCSprite:create("backscreen00.png")
+    bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+    gameLayer:addChild(bg)
+
+    -- init Game
+    initGame()
+
+    -- handing touch events
+    local touchBeginPoint = nil
     
     -- register touch event
     gameLayer:registerScriptTouchHandler(onTouch)
