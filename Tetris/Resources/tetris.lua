@@ -10,7 +10,7 @@ local origin = CCDirector:sharedDirector():getVisibleOrigin()
 local gameLayer
 
 -- max row and col of tetris table 
-local MAX_ROW = 29
+local MAX_ROW = 23
 local MAX_COL = 10
 
 -- start positon of new block
@@ -173,6 +173,13 @@ local function updateStateByBlock(tmpBlock, stateVal)
     end
 end
 
+local function drawBlockUnit(row, col, image_name)
+    local sprite = CCSprite:create(image_name)
+    sprite:setAnchorPoint(ccp(0, 0))
+    sprite:setPosition(col * BLOCK_WIDTH, row * BLOCK_HEIGHT)
+    gameLayer:addChild(sprite)
+end
+
 
 -- create game layer
 local function createGameLayer()
@@ -208,11 +215,22 @@ local function createGameLayer()
         
         -- init next block UI
         drawNextBlock()
+
+        -- draw left and right bound
+        for i = 0, MAX_ROW - 1 do
+            drawBlockUnit(i, MAX_COL + 1, "GrayBlock.png")
+            drawBlockUnit(i, 0, "GrayBlock.png")  
+        end
+
+        -- draw top bound
+        for i = 0, MAX_COL + 1 do
+            drawBlockUnit(MAX_ROW, i, "RedBlock.png")
+        end
         
     end 
 
     local function isGameOver()
-        gameOver = false
+        local gameOver = false
         for i = 0, 3 do
             tmpRow = curBlock.centerRow + curBlock.diffRow[i]
             tmpCol = curBlock.centerCol + curBlock.diffCol[i]
