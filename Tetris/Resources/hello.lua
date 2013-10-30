@@ -85,7 +85,7 @@ local origin = CCDirector:sharedDirector():getVisibleOrigin()
 
 --フレーム内でチェック
 local function update(dt)
-    print(dt)
+    
 end
 
 -- for CCLuaEngine traceback
@@ -141,7 +141,6 @@ end
 local function onTouchMoved(x, y)
     cclog("onTouchMoved: %0.2f, %0.2f", x, y)
     if touchBeginPoint then
-        local cx, cy = layerFarm:getPosition()
         touchBeginPoint = {x = x, y = y}
     end
 end
@@ -172,6 +171,7 @@ local function createGameLayer()
     
     -- register touch event
     gameLayer:registerScriptTouchHandler(onTouch)
+    gameLayer:setTouchEnabled(true)
     
     return gameLayer
 end
