@@ -9,6 +9,49 @@ local origin = CCDirector:sharedDirector():getVisibleOrigin()
 -- game layer
 local gameLayer
 
+-- max row and col of tetris table 
+local MAX_ROW = 29
+local MAX_COL = 10
+
+-- start positon of new block
+local INIT_ROW = 2
+local INIT_COL = 5
+
+local BLOCK_WIDTH = 20
+local BLOCK_HEIGHT = 20
+
+-- score per lien
+local SCORE_PER_LINE = 1000
+
+-- position index 
+local col = 0
+local row = 0
+
+-- block reference
+local curBlock
+local nextBlock
+local ghostBlock
+
+-- state table
+local stateArray = {}
+
+-- state status
+local BLOCK = 1
+local BLINK = 2
+local GHOST = 3
+
+-- player score
+local score = 0
+
+-- player stage
+local stage = 0
+
+-- filling rows
+local filledRows = {}
+
+-- label
+local score_label
+
 -- 8 type of blokcs
 -- use coordinates, (0, 0) is original point, and other are offset
 local blockType = {
@@ -45,43 +88,17 @@ function Block:new(centerRow, centerCol)
     return new_obj
 end
 
--- max row and col of tetris table 
-local MAX_ROW = 29
-local MAX_COL = 10
+function Block:draw(targetRow, targetCol)
 
--- start positon of new block
-local INIT_ROW = 2
-local INIT_COL = 5
-
-local BLOCK_WIDTH = 20
-local BLOCK_HEIGHT = 20
-
--- score per lien
-local SCORE_PER_LINE = 1000
-
--- position index 
-local col = 0
-local row = 0
-
--- block reference
-local curBlock
-local nextBlock
-local ghostBlock
-
--- state table
-local stateArray = {}
-
--- player score
-local score = 0
-
--- player stage
-local stage = 0
-
--- filling rows
-local filledRows = {}
-
--- label
-local score_label
+    targetRow = targetRow or self.centerRow
+    targetCol = targetCol or self.centerCol
+    
+    for i = 0, 3 do
+        local sprite = CCSprite:create("YellowBlock.png")
+        sprite:setPosition(ccp(targetRow * BLOCK_WIDTH + self.diffRow[i] * BLOCK_WIDTH, targetCol * BLOCK_HEIGHT + self.diffCol[i] * BLOCK_HEIGHT))
+        gameLayer:addChild(sprite)                            
+    end
+end
 
 ---------------------------------------------
 ----------       Game Logic     -------------
@@ -139,6 +156,23 @@ local function initStateArray()
     end
 end
 
+local function inField(targetRow, targetCol)
+    return targetRow < MAX_ROW and targetRow >=0 and targetCol >= 0 and targetCol <= MAX_COL + 1
+end
+
+local function updateStateByBlock(tmpBlock, stateVal)
+    local tmpRow
+    local tmpCol
+
+    for i=0, 3 do
+        tmpRow = tmpBlock.centerRow + tmpBlock.diffRow[i]
+        tmpCol = tmpBlock.centerCol + tmpBlock.diffCol[i]
+        if inField(tmpRow, tmpCol) then
+            stateArray[tmpRow][tmpCol] = stateVal
+        end
+    end
+end
+
 
 -- create game layer
 local function createGameLayer()
@@ -146,10 +180,34 @@ local function createGameLayer()
     ---- method definition -----
     ----------------------------
     
+    local function drawNextBlock()
+        nextBlock:draw(14, 15)
+    end
+
     --フレーム内でチェック
     local function onUpdate(dt)
+
+        -- remove all child
+        gameLayer:removeAllChildrenWithCleanup(true)
+        
+        -- init Label UI
+        local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
+        score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
+        gameLayer:addChild(score_str_label)
+
+        -- init score label
+        score_label = CCLabelTTF:create("0", "Arial", 20)
+        score_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 4)
+        gameLayer:addChild(score_label)
+    
+        local next_str_label = CCLabelTTF:create("Next", "Arial", 20)
+        next_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 6)
+        gameLayer:addChild(next_str_label)
         -- update score
         score_label:setString(tostring(score))
+        
+        -- init next block UI
+        drawNextBlock()
         
     end 
 
@@ -180,34 +238,18 @@ local function createGameLayer()
 
     -- init game
     local function initGame()
-
-        -- init Label UI
-        local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
-        score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
-        gameLayer:addChild(score_str_label)
-
-        -- init score label
-        score_label = CCLabelTTF:create("0", "Arial", 20)
-        score_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 4)
-        gameLayer:addChild(score_label)
-    
-        local next_str_label = CCLabelTTF:create("Next", "Arial", 20)
-        next_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 6)
-        gameLayer:addChild(next_str_label)
         
         -- init state array
         initStateArray()
-        
+
         ghostBlock = Block:new(INIT_ROW, INIT_COL)
         nextBlock = Block:new(INIT_ROW, INIT_COL)
 
         -- generate next block
         genNextBlock()
 
-
-
         -- update stateArray
-        
+        updateStateByBlock(curBlock, 1)
     end
 
     -- add touch event callback
@@ -272,9 +314,37 @@ local function main()
     collectgarbage("setpause", 100)
     collectgarbage("setstepmul", 5000)
 
-    -- import test
+    -- import other module
     require "hello2"
     cclog("result is " .. myadd(3, 5))
+
+    -- play background music, preload effect
+    local bgMusicPath = CCFileUtils:sharedFileUtils():fullPathForFilename("background.mp3")
+    --SimpleAudioEngine:sharedEngine():playBackgroundMusic(bgMusicPath, true)
+    
+    local effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
+    SimpleAudioEngine:sharedEngine():preloadEffect(effectPath)
+
+    local sceneGame = CCScene:create()
+
+    -- add layer
+    sceneGame:addChild(createGameLayer())
+    --sceneGame:addChild(createLayerMenu())
+    
+    -- run game
+    CCDirector:sharedDirector():runWithScene(sceneGame)
+end
+
+xpcall(main, __G__TRACKBACK__)
+
+
+
+
+
+
+
+
+
 
     -- add the moving dog
     local function creatDog()
@@ -439,22 +509,3 @@ local function main()
         return layerMenu
     end
 
-    -- play background music, preload effect
-    local bgMusicPath = CCFileUtils:sharedFileUtils():fullPathForFilename("background.mp3")
-    --SimpleAudioEngine:sharedEngine():playBackgroundMusic(bgMusicPath, true)
-    
-    local effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
-    SimpleAudioEngine:sharedEngine():preloadEffect(effectPath)
-
-    -- run
-    local sceneGame = CCScene:create()
-
-    -- add layer
-    sceneGame:addChild(createGameLayer())
-    --sceneGame:addChild(createLayerMenu())
-    
-    -- run game
-    CCDirector:sharedDirector():runWithScene(sceneGame)
-end
-
-xpcall(main, __G__TRACKBACK__)
