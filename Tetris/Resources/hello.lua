@@ -79,15 +79,6 @@ local filledRows = {}
 ----------       Game Logic     -------------
 ---------------------------------------------
 
--- get screen size
-local visibleSize = CCDirector:sharedDirector():getVisibleSize()
-local origin = CCDirector:sharedDirector():getVisibleOrigin()
-
---フレーム内でチェック
-local function update(dt)
-    
-end
-
 -- for CCLuaEngine traceback
 function __G__TRACKBACK__(msg)
     print("----------------------------------------")
@@ -127,51 +118,73 @@ local function resetGhostBlock()
     end
 end
 
--- handing touch events
-local touchBeginPoint = nil
-
-local function onTouchBegan(x, y)
-    cclog("onTouchBegan: %0.2f, %0.2f", x, y)
-    touchBeginPoint = {x = x, y = y}
-
-    -- CCTOUCHBEGAN event must return true
-    return true
-end
-
-local function onTouchMoved(x, y)
-    cclog("onTouchMoved: %0.2f, %0.2f", x, y)
-    if touchBeginPoint then
-        touchBeginPoint = {x = x, y = y}
-    end
-end
-
-local function onTouchEnded(x, y)
-    cclog("onTouchEnded: %0.2f, %0.2f", x, y)
-    touchBeginPoint = nil
-end
-
-local function onTouch(eventType, x, y)
-    if eventType == "began" then   
-        return onTouchBegan(x, y)
-    elseif eventType == "moved" then
-        return onTouchMoved(x, y)
-    else
-        return onTouchEnded(x, y)
-    end
-end
-
 -- create game layer
 local function createGameLayer()
     local gameLayer = CCLayer:create()
+
+    -- get screen size
+    local visibleSize = CCDirector:sharedDirector():getVisibleSize()
+    local origin = CCDirector:sharedDirector():getVisibleOrigin()
         
     -- add in game layer background
     local bg = CCSprite:create("backscreen00.png")
     bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
     gameLayer:addChild(bg)
+
+    -- handing touch events
+    local touchBeginPoint = nil
+
+    ----------------------------
+    ---- method definition -----
+    ----------------------------
+    
+    --フレーム内でチェック
+    local function onUpdate(dt)
+
+    end
+
+    -- init game
+    local function initGame()
+    
+    end
+
+    -- add touch event callback
+    local function onTouchBegan(x, y)
+        cclog("onTouchBegan: %0.2f, %0.2f", x, y)
+        touchBeginPoint = {x = x, y = y}
+
+        -- CCTOUCHBEGAN event must return true
+        return true
+    end
+
+    local function onTouchMoved(x, y)
+        cclog("onTouchMoved: %0.2f, %0.2f", x, y)
+        if touchBeginPoint then
+            touchBeginPoint = {x = x, y = y}
+        end
+    end
+
+    local function onTouchEnded(x, y)
+        cclog("onTouchEnded: %0.2f, %0.2f", x, y)
+        touchBeginPoint = nil
+    end
+
+    local function onTouch(eventType, x, y)
+        if eventType == "began" then   
+            return onTouchBegan(x, y)
+        elseif eventType == "moved" then
+            return onTouchMoved(x, y)
+        else
+            return onTouchEnded(x, y)
+        end
+    end
     
     -- register touch event
     gameLayer:registerScriptTouchHandler(onTouch)
     gameLayer:setTouchEnabled(true)
+    
+    -- add update function
+    gameLayer:scheduleUpdateWithPriorityLua(onUpdate, 0)
     
     return gameLayer
 end
@@ -297,9 +310,11 @@ local function main()
                 return onTouchEnded(x, y)
             end
         end
-
+          
         layerFarm:registerScriptTouchHandler(onTouch)
         layerFarm:setTouchEnabled(true)
+
+ 
 
         return layerFarm
     end
@@ -359,9 +374,6 @@ local function main()
     -- add layer
     sceneGame:addChild(createGameLayer())
     --sceneGame:addChild(createLayerMenu())
-
-    -- add update function
-    sceneGame:scheduleUpdateWithPriorityLua(update, 0)
     
     -- run game
     CCDirector:sharedDirector():runWithScene(sceneGame)
