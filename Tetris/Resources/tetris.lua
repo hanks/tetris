@@ -49,8 +49,13 @@ local stage = 0
 -- filling rows
 local filledRows = {}
 
+local isFirstGrounded = false
+
 -- label
 local score_label
+
+-- game running flag
+local isRunning = true
 
 -- handing touch events
 local touchBeginPoint = nil
@@ -142,6 +147,12 @@ local function resetGhostBlock()
     end
 end
 
+local function resetFilledRows()
+    for i = 0, MAX_ROW do
+        filledRows[i] = -1
+    end
+end
+
 local function initStateArray()
     -- mark top, left and right side to 1 
     -- to make as bound
@@ -164,10 +175,12 @@ local function initStateArray()
     end
 end
 
+-- whether in the active area
 local function inField(targetRow, targetCol)
-    return targetRow < MAX_ROW and targetRow >=0 and targetCol >= 0 and targetCol <= MAX_COL + 1
+    return targetRow < MAX_ROW and targetRow >=0 and targetCol >= 1 and targetCol <= MAX_COL
 end
 
+-- update state array by state value
 local function updateStateByBlock(tmpBlock, stateVal)
     local tmpRow
     local tmpCol
@@ -181,6 +194,32 @@ local function updateStateByBlock(tmpBlock, stateVal)
     end
 end
 
+local function isGameOver()
+    local gameOver = false
+    for i = 0, 3 do
+        tmpRow = curBlock.centerRow + curBlock.diffRow[i]
+        tmpCol = curBlock.centerCol + curBlock.diffCol[i]
+        if stateArray[tmpRow][tmpCol] == 1 then
+            gameOver = true
+            break
+        end
+    end
+    return gameOver
+end
+
+local function checkGameOver()
+    if isGameOver() then
+        cclog("game over")
+        isRunning = false
+    end
+end
+
+local function genNextBlock()
+    curBlock = nextBlock
+    nextBlock = Block:new(INIT_ROW, INIT_COL)
+    checkGameOver()
+end
+
 local function drawBlockUnit(row, col, image_name)
     local sprite = CCSprite:create(image_name)
     sprite:setAnchorPoint(ccp(0, 0))
@@ -188,15 +227,84 @@ local function drawBlockUnit(row, col, image_name)
     gameLayer:addChild(sprite)
 end
 
+local function isCollision(targetRow, targetCol, tmpBlock)
+    local result = false
+    updateStateByBlock(tmpBlock, 0)
+	for i = 0, 3 do
+	    local tmpRow = targetRow + tmpBlock.diffRow[i]
+	    local tmpCol = targetCol + tmpBlock.diffCol[i]
+	    if not inField(tmpRow, tmpCol) or stateArray[tmpRow][tmpCol] == 1 then
+	        result = true
+	        break
+	    end
+	end    
+	updateStateByBlock(tmpBlock, 1)
+    return result
+end
+
+local function isGrounded() 
+    return isCollision(curBlock.centerRow + 1, curBlock.centerCol, curBlock)
+end
+
+local function getGroundedCenterRow(curRow, curCol)
+    for i = curRow, MAX_ROW - 1 do
+        if isCollision(i + 1, curCol, curBlock) then
+            return i
+        end
+    end
+    return MAX_ROW - 1
+end
+
+local function moveBlock2Position(tmpBlock, toRow, toCol)
+    updateStateByBlock (tmpBlock, 0);
+    tmpBlock.centerRow = toRow;
+    tmpBlock.centerCol = toCol;
+    updateStateByBlock (tmpBlock, 1);
+end
+
 local function blockMove()
+    resetFilledRows()
+    resetGhostBlock()
+    
+    local toRow = -1
+    local toCol = -1
+    
     if inputDirection == 'down' then
     
     elseif inputDirection == 'up' then
-    
+        toRow = getGroundedCenterRow(curBlock.centerRow, curBlock.centerCol)
+        toCol = curBlock.centerCol
     elseif inputDirection == 'left' then
     
     elseif inputDirection == 'right' then
     
+    end
+    -- clear input
+    inputDirection = ''
+    
+    -- move block
+    collision = isCollision(toRow, toCol, curBlock)
+    if collision == false then
+        moveBlock2Position(curBlock, toRow, toCol)
+    end
+    
+    -- is ground
+    if isGrounded() then
+    	if isFirstGrounded == false then
+    	    isFirstGrounded = true
+    	    -- record time
+    	end
+    	
+    	-- create new block
+    	genNextBlock()
+    else
+        -- update ghost block postion
+        ghostBlock.centerRow = getGroundedCenterRow(curBlock.centerRow, curBlock.centerCol);
+        ghostBlock.centerCol = curBlock.centerCol;
+        ghostBlock.diffRow = curBlock.diffRow;
+        ghostBlock.diffCol = curBlock.diffCol;
+        updateStateByBlock(ghostBlock, 3);
+        isFirstGrounded = false;
     end
 end
 
@@ -212,82 +320,80 @@ local function createGameLayer()
 
     --フレーム内でチェック
     local function onUpdate(dt)
-
-        -- remove all child
-        gameLayer:removeAllChildrenWithCleanup(true)
-        
-        -- init Label UI
-        local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
-        score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
-        gameLayer:addChild(score_str_label)
-
-        -- init score label
-        score_label = CCLabelTTF:create("0", "Arial", 20)
-        score_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 4)
-        gameLayer:addChild(score_label)
-    
-        local next_str_label = CCLabelTTF:create("Next", "Arial", 20)
-        next_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 6)
-        gameLayer:addChild(next_str_label)
-        -- update score
-        score_label:setString(tostring(score))
-        
-        -- init next block UI
-        drawNextBlock()
-
-        -- draw left and right bound
-        for i = 0, MAX_ROW - 1 do
-            drawBlockUnit(i, MAX_COL + 1, "GrayBlock.png")
-            drawBlockUnit(i, 0, "GrayBlock.png")  
-        end
-
-        -- draw top bound
-        for i = 0, MAX_COL + 1 do
-            drawBlockUnit(MAX_ROW, i, "RedBlock.png")
-        end
-
-        -- draw current block
-        for row = 0, MAX_ROW - 1 do
-            for col = 1, MAX_COL do
-                if stateArray[row][col] == tBLOCK then
-                    drawBlockUnit(row, col, "YellowBlock.png")
-                end
-            end
-        end
-        
-        -- draw control pad
-        UP = CCSprite:create("up.png")
-        UP:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 15)
-        gameLayer:addChild(UP)
-
-        DOWN = CCSprite:create("down.png")
-        DOWN:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 18)
-        gameLayer:addChild(DOWN)
-
-        LEFT = CCSprite:create("left.png")
-        LEFT:setPosition(visibleSize.width - BLOCK_WIDTH * 3, visibleSize.height - BLOCK_WIDTH * 16.5)
-        gameLayer:addChild(LEFT)
-
-        RIGHT = CCSprite:create("right.png")
-        RIGHT:setPosition(visibleSize.width - BLOCK_WIDTH * 1, visibleSize.height - BLOCK_WIDTH * 16.5)
-        gameLayer:addChild(RIGHT)
-
-       -- update block movement
-       blockMove()
+        if isRunning then
+	        -- remove all child
+	        gameLayer:removeAllChildrenWithCleanup(true)
+	        
+	        -- init Label UI
+	        local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
+	        score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
+	        gameLayer:addChild(score_str_label)
+	
+	        -- init score label
+	        score_label = CCLabelTTF:create("0", "Arial", 20)
+	        score_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 4)
+	        gameLayer:addChild(score_label)
+	    
+	        local next_str_label = CCLabelTTF:create("Next", "Arial", 20)
+	        next_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 6)
+	        gameLayer:addChild(next_str_label)
+	        -- update score
+	        score_label:setString(tostring(score))
+	        
+	        -- init next block UI
+	        drawNextBlock()
+	
+	        -- draw left and right bound
+	        for i = 0, MAX_ROW - 1 do
+	            drawBlockUnit(i, MAX_COL + 1, "GrayBlock.png")
+	            drawBlockUnit(i, 0, "GrayBlock.png")  
+	        end
+	
+	        -- draw top bound
+	        for i = 0, MAX_COL + 1 do
+	            drawBlockUnit(MAX_ROW, i, "RedBlock.png")
+	        end
+	
+	        -- draw current block
+	        for row = 0, MAX_ROW - 1 do
+	            for col = 1, MAX_COL do
+	                if stateArray[row][col] == tBLOCK then
+	                    drawBlockUnit(row, col, "YellowBlock.png")
+	                end
+	            end
+	        end
+	        
+	        -- draw ghost block
+	        for row = 0, MAX_ROW - 1 do
+	            for col = 1, MAX_COL do
+	                if stateArray[row][col] == tGHOST then
+	                    drawBlockUnit(row, col, "GrayBlock.png")
+	                end
+	            end
+	        end
+	        
+	        -- draw control pad
+	        UP = CCSprite:create("up.png")
+	        UP:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 15)
+	        gameLayer:addChild(UP)
+	
+	        DOWN = CCSprite:create("down.png")
+	        DOWN:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 18)
+	        gameLayer:addChild(DOWN)
+	
+	        LEFT = CCSprite:create("left.png")
+	        LEFT:setPosition(visibleSize.width - BLOCK_WIDTH * 3, visibleSize.height - BLOCK_WIDTH * 16.5)
+	        gameLayer:addChild(LEFT)
+	
+	        RIGHT = CCSprite:create("right.png")
+	        RIGHT:setPosition(visibleSize.width - BLOCK_WIDTH * 1, visibleSize.height - BLOCK_WIDTH * 16.5)
+	        gameLayer:addChild(RIGHT)
+	
+	        -- update block movement
+	        blockMove()
+	        
+	    end
     end 
-
-    local function isGameOver()
-        local gameOver = false
-        for i = 0, 3 do
-            tmpRow = curBlock.centerRow + curBlock.diffRow[i]
-            tmpCol = curBlock.centerCol + curBlock.diffCol[i]
-            if stateArray[tmpRow][tmpCol] == 1 then
-                gameOver = true
-                break
-            end
-        end
-        return gameOver
-    end
 
     -- detect touch on sprite or not    
     local function containsTouchLocation(sprite, point)
@@ -296,18 +402,6 @@ local function createGameLayer()
         local touchRect = CCRectMake(-s.width / 2 + position.x, -s.height / 2 + position.y, s.width, s.height)
         local b = touchRect:containsPoint(point)
         return b
-    end
-
-    local function checkGameOver()
-        if isGameOver() then
-            cclog("game over")
-        end
-    end
-
-    local function genNextBlock()
-        curBlock = nextBlock
-        nextBlock = Block:new(INIT_ROW, INIT_COL)
-        checkGameOver()
     end
 
     -- init game
