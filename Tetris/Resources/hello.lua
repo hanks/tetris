@@ -1,3 +1,92 @@
+------------------------------------
+-----  User Define Variable --------
+------------------------------------
+
+-- 8 type of blokcs
+-- use coordinates, (0, 0) is original point, and other are offset
+local blockType = {
+         {{0,0}, {1,0}, {2,0}, {-1,0}}, -- 棒形
+         {{0,0}, {0,1}, {1,0}, {1,1}}, -- 正方形
+         {{0,0}, {-1,0}, {0,1}, {1,1}}, -- S字
+         {{0,0}, {-1,1}, {0,1}, {1,0}}, -- Z字
+         {{0,0}, {-1,-1}, {0,-1}, {0,1}}, -- J字
+         {{0,0}, {-2,0}, {-1,0}, {0,1}}, -- L字
+         {{0,0}, {0,-1}, {0,1}, {1,0}},-- T字
+     }
+
+-- Block class
+Block = {}
+Block.__index = Block
+function Block:new(curRow, curCol)
+    local new_obj = {}
+    setmetable(new_obj, self)
+    
+    -- init position parameters
+    new_obj.curRow = curRow
+    new_obj.curCol = curCol
+    new_obj.diffRow = {}
+    new_obj.diffCol = {}
+    
+    -- use random to init type
+    local type = math.random(7)
+
+    -- init offset
+    for i = 1, 4 do
+        new_obj.diffRow[i] = blockType[type][i][0]
+        new_obj.diffCol[i] = blockType[type][i][1]
+    end
+
+    return new_obj
+end
+
+-- max row and col of tetris table 
+local MAX_ROW = 29
+local MAX_COL = 10
+
+-- start positon of new block
+local INIT_ROW = 2
+local INIT_COL = 5
+
+local BLOCK_WIDTH = 20
+local BLOCK_HEIGHT = 20
+
+-- score per lien
+local SCORE_PER_LINE = 1000
+
+-- position index 
+local col = 0
+local row = 0
+
+-- block reference
+local curBlock
+local nextBlock
+local ghostBlock
+
+-- state table
+local stateArray = {}
+
+-- player score
+local score = 0
+
+-- player stage
+local stage = 0
+
+-- filling rows
+local filledRows = {}
+
+
+---------------------------------------------
+----------       Game Logic     -------------
+---------------------------------------------
+
+-- get screen size
+local visibleSize = CCDirector:sharedDirector():getVisibleSize()
+local origin = CCDirector:sharedDirector():getVisibleOrigin()
+
+--フレーム内でチェック
+local function update(dt)
+    print(dt)
+end
 
 -- for CCLuaEngine traceback
 function __G__TRACKBACK__(msg)
@@ -7,22 +96,94 @@ function __G__TRACKBACK__(msg)
     print("----------------------------------------")
 end
 
+local cclog = function(...)
+    print(string.format(...))
+end
+
+local function initStateArray()
+    for row = 0, MAX_ROW - 1 do
+        stateArray[row] = {}
+        for col = 1, MAX_COL do
+            stateArray[row][col] = 0
+        end
+    end
+end
+
+local function resetStateArray()
+    for row = 0, MAX_ROW - 1 do
+        for col = 1, MAX_COL do
+            stateArray[row][col] = 0
+        end
+    end
+end
+
+local function resetGhostBlock() 
+    for row = 0, MAX_ROW - 1 do
+        for col = 1, MAX_COL do
+            if stateArray[row][col] == 3 then
+                stateArray[row][col] = 0
+            end
+        end
+    end
+end
+
+-- handing touch events
+local touchBeginPoint = nil
+
+local function onTouchBegan(x, y)
+    cclog("onTouchBegan: %0.2f, %0.2f", x, y)
+    touchBeginPoint = {x = x, y = y}
+
+    -- CCTOUCHBEGAN event must return true
+    return true
+end
+
+local function onTouchMoved(x, y)
+    cclog("onTouchMoved: %0.2f, %0.2f", x, y)
+    if touchBeginPoint then
+        local cx, cy = layerFarm:getPosition()
+        touchBeginPoint = {x = x, y = y}
+    end
+end
+
+local function onTouchEnded(x, y)
+    cclog("onTouchEnded: %0.2f, %0.2f", x, y)
+    touchBeginPoint = nil
+end
+
+local function onTouch(eventType, x, y)
+    if eventType == "began" then   
+        return onTouchBegan(x, y)
+    elseif eventType == "moved" then
+        return onTouchMoved(x, y)
+    else
+        return onTouchEnded(x, y)
+    end
+end
+
+-- create game layer
+local function createGameLayer()
+    local gameLayer = CCLayer:create()
+        
+    -- add in game layer background
+    local bg = CCSprite:create("backscreen00.png")
+    bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+    gameLayer:addChild(bg)
+    
+    -- register touch event
+    gameLayer:registerScriptTouchHandler(onTouch)
+    
+    return gameLayer
+end
+
 local function main()
     -- avoid memory leak
     collectgarbage("setpause", 100)
     collectgarbage("setstepmul", 5000)
 
-    local cclog = function(...)
-        print(string.format(...))
-    end
-
+    -- import test
     require "hello2"
     cclog("result is " .. myadd(3, 5))
-
-    ---------------
-
-    local visibleSize = CCDirector:sharedDirector():getVisibleSize()
-    local origin = CCDirector:sharedDirector():getVisibleOrigin()
 
     -- add the moving dog
     local function creatDog()
@@ -67,17 +228,7 @@ local function main()
         return spriteDog
     end
     
-    -- create game layer
-    local function createGameLayer()
-        local gameLayer = CCLayer:create()
-        
-        -- add in game layer background
-        local bg = CCSprite:create("backscreen00.png")
-        bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
-        gameLayer:addChild(bg)
-        return gameLayer
-    end
-
+    
     -- create farm
     local function createLayerFarm()
         local layerFarm = CCLayer:create()
@@ -196,18 +347,23 @@ local function main()
     end
 
     -- play background music, preload effect
-
-    -- uncomment below for the BlackBerry version
-    -- local bgMusicPath = CCFileUtils:sharedFileUtils():fullPathForFilename("background.ogg")
     local bgMusicPath = CCFileUtils:sharedFileUtils():fullPathForFilename("background.mp3")
-    SimpleAudioEngine:sharedEngine():playBackgroundMusic(bgMusicPath, true)
+    --SimpleAudioEngine:sharedEngine():playBackgroundMusic(bgMusicPath, true)
+    
     local effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
     SimpleAudioEngine:sharedEngine():preloadEffect(effectPath)
 
     -- run
     local sceneGame = CCScene:create()
+
+    -- add layer
     sceneGame:addChild(createGameLayer())
     --sceneGame:addChild(createLayerMenu())
+
+    -- add update function
+    sceneGame:scheduleUpdateWithPriorityLua(update, 0)
+    
+    -- run game
     CCDirector:sharedDirector():runWithScene(sceneGame)
 end
 
