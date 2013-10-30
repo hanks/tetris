@@ -5,7 +5,10 @@
 -- get screen size
 local visibleSize = CCDirector:sharedDirector():getVisibleSize()
 local origin = CCDirector:sharedDirector():getVisibleOrigin()
-    
+
+-- game layer
+local gameLayer
+
 -- 8 type of blokcs
 -- use coordinates, (0, 0) is original point, and other are offset
 local blockType = {
@@ -177,6 +180,21 @@ local function createGameLayer()
 
     -- init game
     local function initGame()
+
+        -- init Label UI
+        local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
+        score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
+        gameLayer:addChild(score_str_label)
+
+        -- init score label
+        score_label = CCLabelTTF:create("0", "Arial", 20)
+        score_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 4)
+        gameLayer:addChild(score_label)
+    
+        local next_str_label = CCLabelTTF:create("Next", "Arial", 20)
+        next_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 6)
+        gameLayer:addChild(next_str_label)
+        
         -- init state array
         initStateArray()
         
@@ -185,6 +203,8 @@ local function createGameLayer()
 
         -- generate next block
         genNextBlock()
+
+
 
         -- update stateArray
         
@@ -224,7 +244,7 @@ local function createGameLayer()
     ------------------------
     ---- Game Logic  -------
     ------------------------
-    local gameLayer = CCLayer:create()
+    gameLayer = CCLayer:create()
         
     -- add in game layer background
     local bg = CCSprite:create("backscreen00.png")
@@ -233,20 +253,6 @@ local function createGameLayer()
 
     -- init Game
     initGame()
-    
-    -- init Label UI
-    local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
-    score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
-    gameLayer:addChild(score_str_label)
-
-    -- init score label
-    score_label = CCLabelTTF:create("0", "Arial", 20)
-    score_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 4)
-    gameLayer:addChild(score_label)
-    
-    local next_str_label = CCLabelTTF:create("Next", "Arial", 20)
-    next_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 6)
-    gameLayer:addChild(next_str_label)
 
     -- handing touch events
     local touchBeginPoint = nil
