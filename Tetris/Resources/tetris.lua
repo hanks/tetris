@@ -181,7 +181,7 @@ local function createGameLayer()
     ----------------------------
     
     local function drawNextBlock()
-        nextBlock:draw(14, 15)
+        nextBlock:draw(13, 15)
     end
 
     --フレーム内でチェック
