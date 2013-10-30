@@ -189,7 +189,15 @@ local function drawBlockUnit(row, col, image_name)
 end
 
 local function blockMove()
+    if inputDirection == 'down' then
     
+    elseif inputDirection == 'up' then
+    
+    elseif inputDirection == 'left' then
+    
+    elseif inputDirection == 'right' then
+    
+    end
 end
 
 -- create game layer
@@ -263,6 +271,9 @@ local function createGameLayer()
         RIGHT = CCSprite:create("right.png")
         RIGHT:setPosition(visibleSize.width - BLOCK_WIDTH * 1, visibleSize.height - BLOCK_WIDTH * 16.5)
         gameLayer:addChild(RIGHT)
+
+       -- update block movement
+       blockMove()
     end 
 
     local function isGameOver()
