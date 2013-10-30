@@ -36,7 +36,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     CCLuaEngine* pEngine = CCLuaEngine::defaultEngine();
     CCScriptEngineManager::sharedManager()->setScriptEngine(pEngine);
 
-    std::string path = CCFileUtils::sharedFileUtils()->fullPathForFilename("hello.lua");
+    std::string path = CCFileUtils::sharedFileUtils()->fullPathForFilename("tetris.lua");
     pEngine->executeScriptFile(path.c_str());
 
     return true;

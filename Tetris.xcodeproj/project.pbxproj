@@ -301,7 +301,7 @@
 		C8B68143181FEB70005931C1 /* farm.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C8B68142181FEB70005931C1 /* farm.jpg */; };
 		C8B68145181FEB70005931C1 /* crop.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B68144181FEB70005931C1 /* crop.png */; };
 		C8B68147181FEB70005931C1 /* dog.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B68146181FEB70005931C1 /* dog.png */; };
-		C8B68149181FEB70005931C1 /* hello.lua in Resources */ = {isa = PBXBuildFile; fileRef = C8B68148181FEB70005931C1 /* hello.lua */; };
+		C8B68149181FEB70005931C1 /* tetris.lua in Resources */ = {isa = PBXBuildFile; fileRef = C8B68148181FEB70005931C1 /* tetris.lua */; };
 		C8B6814B181FEB70005931C1 /* hello2.lua in Resources */ = {isa = PBXBuildFile; fileRef = C8B6814A181FEB70005931C1 /* hello2.lua */; };
 		C8B6814D181FEB70005931C1 /* land.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6814C181FEB70005931C1 /* land.png */; };
 		C8B6814F181FEB70005931C1 /* menu1.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6814E181FEB70005931C1 /* menu1.png */; };
@@ -961,7 +961,7 @@
 		C8B68142181FEB70005931C1 /* farm.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = farm.jpg; path = Resources/farm.jpg; sourceTree = "<group>"; };
 		C8B68144181FEB70005931C1 /* crop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = crop.png; path = Resources/crop.png; sourceTree = "<group>"; };
 		C8B68146181FEB70005931C1 /* dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dog.png; path = Resources/dog.png; sourceTree = "<group>"; };
-		C8B68148181FEB70005931C1 /* hello.lua */ = {isa = PBXFileReference; lastKnownFileType = text; name = hello.lua; path = Resources/hello.lua; sourceTree = "<group>"; };
+		C8B68148181FEB70005931C1 /* tetris.lua */ = {isa = PBXFileReference; lastKnownFileType = text; name = tetris.lua; path = Resources/tetris.lua; sourceTree = "<group>"; };
 		C8B6814A181FEB70005931C1 /* hello2.lua */ = {isa = PBXFileReference; lastKnownFileType = text; name = hello2.lua; path = Resources/hello2.lua; sourceTree = "<group>"; };
 		C8B6814C181FEB70005931C1 /* land.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = land.png; path = Resources/land.png; sourceTree = "<group>"; };
 		C8B6814E181FEB70005931C1 /* menu1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = menu1.png; path = Resources/menu1.png; sourceTree = "<group>"; };
@@ -1101,7 +1101,7 @@
 				C8B68142181FEB70005931C1 /* farm.jpg */,
 				C8B68144181FEB70005931C1 /* crop.png */,
 				C8B68146181FEB70005931C1 /* dog.png */,
-				C8B68148181FEB70005931C1 /* hello.lua */,
+				C8B68148181FEB70005931C1 /* tetris.lua */,
 				C8B6814A181FEB70005931C1 /* hello2.lua */,
 				C8B6814C181FEB70005931C1 /* land.png */,
 				C8B6814E181FEB70005931C1 /* menu1.png */,
@@ -2453,7 +2453,7 @@
 				C8B68184181FF169005931C1 /* ToL.png in Resources */,
 				C8B67D82181FEB69005931C1 /* Icon@2x.png in Resources */,
 				C8B68143181FEB70005931C1 /* farm.jpg in Resources */,
-				C8B68149181FEB70005931C1 /* hello.lua in Resources */,
+				C8B68149181FEB70005931C1 /* tetris.lua in Resources */,
 				C8B6817D181FF169005931C1 /* HightLineBlock.png in Resources */,
 				C8B67F97181FEB6C005931C1 /* project.pbxproj in Resources */,
 				C8B68125181FEB70005931C1 /* AudioEngine.lua in Resources */,
@@ -2880,6 +2880,7 @@
 				C8B6815A181FEB70005931C1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
