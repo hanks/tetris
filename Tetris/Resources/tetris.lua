@@ -10,7 +10,7 @@ local origin = CCDirector:sharedDirector():getVisibleOrigin()
 local gameLayer
 
 -- max row and col of tetris table 
-local MAX_ROW = 23
+local MAX_ROW = 20
 local MAX_COL = 10
 
 -- start positon of new block
@@ -36,9 +36,9 @@ local ghostBlock
 local stateArray = {}
 
 -- state status
-local BLOCK = 1
-local BLINK = 2
-local GHOST = 3
+local tBLOCK = 1
+local tBLINK = 2
+local tGHOST = 3
 
 -- player score
 local score = 0
@@ -51,6 +51,14 @@ local filledRows = {}
 
 -- label
 local score_label
+
+-- handing touch events
+local touchBeginPoint = nil
+local inputDirection = nil
+local UP
+local DOWN
+local LEFT
+local RIGHT
 
 -- 8 type of blokcs
 -- use coordinates, (0, 0) is original point, and other are offset
@@ -127,7 +135,7 @@ end
 local function resetGhostBlock() 
     for row = 0, MAX_ROW - 1 do
         for col = 1, MAX_COL do
-            if stateArray[row][col] == 3 then
+            if stateArray[row][col] == tGHOST then
                 stateArray[row][col] = 0
             end
         end
@@ -180,6 +188,9 @@ local function drawBlockUnit(row, col, image_name)
     gameLayer:addChild(sprite)
 end
 
+local function blockMove()
+    
+end
 
 -- create game layer
 local function createGameLayer()
@@ -188,7 +199,7 @@ local function createGameLayer()
     ----------------------------
     
     local function drawNextBlock()
-        nextBlock:draw(13, 15)
+        nextBlock:draw(13.5, 15)
     end
 
     --フレーム内でチェック
@@ -226,7 +237,32 @@ local function createGameLayer()
         for i = 0, MAX_COL + 1 do
             drawBlockUnit(MAX_ROW, i, "RedBlock.png")
         end
+
+        -- draw current block
+        for row = 0, MAX_ROW - 1 do
+            for col = 1, MAX_COL do
+                if stateArray[row][col] == tBLOCK then
+                    drawBlockUnit(row, col, "YellowBlock.png")
+                end
+            end
+        end
         
+        -- draw control pad
+        UP = CCSprite:create("up.png")
+        UP:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 15)
+        gameLayer:addChild(UP)
+
+        DOWN = CCSprite:create("down.png")
+        DOWN:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 18)
+        gameLayer:addChild(DOWN)
+
+        LEFT = CCSprite:create("left.png")
+        LEFT:setPosition(visibleSize.width - BLOCK_WIDTH * 3, visibleSize.height - BLOCK_WIDTH * 16.5)
+        gameLayer:addChild(LEFT)
+
+        RIGHT = CCSprite:create("right.png")
+        RIGHT:setPosition(visibleSize.width - BLOCK_WIDTH * 1, visibleSize.height - BLOCK_WIDTH * 16.5)
+        gameLayer:addChild(RIGHT)
     end 
 
     local function isGameOver()
@@ -274,7 +310,7 @@ local function createGameLayer()
     local function onTouchBegan(x, y)
         cclog("onTouchBegan: %0.2f, %0.2f", x, y)
         touchBeginPoint = {x = x, y = y}
-
+        
         -- CCTOUCHBEGAN event must return true
         return true
     end
@@ -314,13 +350,10 @@ local function createGameLayer()
     -- init Game
     initGame()
 
-    -- handing touch events
-    local touchBeginPoint = nil
-    
     -- register touch event
     gameLayer:registerScriptTouchHandler(onTouch)
     gameLayer:setTouchEnabled(true)
-    
+
     -- execute update function per frame
     gameLayer:scheduleUpdateWithPriorityLua(onUpdate, 0)
 

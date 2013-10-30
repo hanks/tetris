@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C8A822601821083E00EDD065 /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = C8A8225E1821083E00EDD065 /* down.png */; };
+		C8A822611821083E00EDD065 /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = C8A8225F1821083E00EDD065 /* up.png */; };
 		C8B67D5E181FEB68005931C1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B67D5D181FEB68005931C1 /* QuartzCore.framework */; };
 		C8B67D60181FEB69005931C1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B67D5F181FEB69005931C1 /* OpenGLES.framework */; };
 		C8B67D62181FEB69005931C1 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B67D61181FEB69005931C1 /* OpenAL.framework */; };
@@ -326,14 +328,16 @@
 		C8B68181181FF169005931C1 /* RedBlock.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6816A181FF169005931C1 /* RedBlock.png */; };
 		C8B68182181FF169005931C1 /* sideLine.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6816B181FF169005931C1 /* sideLine.png */; };
 		C8B68183181FF169005931C1 /* threeBlockWidth.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6816C181FF169005931C1 /* threeBlockWidth.png */; };
-		C8B68184181FF169005931C1 /* ToL.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6816D181FF169005931C1 /* ToL.png */; };
-		C8B68185181FF169005931C1 /* ToR.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6816E181FF169005931C1 /* ToR.png */; };
+		C8B68184181FF169005931C1 /* left.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6816D181FF169005931C1 /* left.png */; };
+		C8B68185181FF169005931C1 /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6816E181FF169005931C1 /* right.png */; };
 		C8B68186181FF169005931C1 /* underLine.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B6816F181FF169005931C1 /* underLine.png */; };
 		C8B68187181FF169005931C1 /* unview.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B68170181FF169005931C1 /* unview.png */; };
 		C8B68188181FF169005931C1 /* YellowBlock.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B68171181FF169005931C1 /* YellowBlock.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C8A8225E1821083E00EDD065 /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = down.png; path = Resources/down.png; sourceTree = "<group>"; };
+		C8A8225F1821083E00EDD065 /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = up.png; path = Resources/up.png; sourceTree = "<group>"; };
 		C8B67D5A181FEB68005931C1 /* Tetris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tetris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8B67D5D181FEB68005931C1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C8B67D5F181FEB69005931C1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -986,8 +990,8 @@
 		C8B6816A181FF169005931C1 /* RedBlock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RedBlock.png; path = Resources/RedBlock.png; sourceTree = "<group>"; };
 		C8B6816B181FF169005931C1 /* sideLine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sideLine.png; path = Resources/sideLine.png; sourceTree = "<group>"; };
 		C8B6816C181FF169005931C1 /* threeBlockWidth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = threeBlockWidth.png; path = Resources/threeBlockWidth.png; sourceTree = "<group>"; };
-		C8B6816D181FF169005931C1 /* ToL.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToL.png; path = Resources/ToL.png; sourceTree = "<group>"; };
-		C8B6816E181FF169005931C1 /* ToR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToR.png; path = Resources/ToR.png; sourceTree = "<group>"; };
+		C8B6816D181FF169005931C1 /* left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = left.png; path = Resources/left.png; sourceTree = "<group>"; };
+		C8B6816E181FF169005931C1 /* right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = right.png; path = Resources/right.png; sourceTree = "<group>"; };
 		C8B6816F181FF169005931C1 /* underLine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = underLine.png; path = Resources/underLine.png; sourceTree = "<group>"; };
 		C8B68170181FF169005931C1 /* unview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unview.png; path = Resources/unview.png; sourceTree = "<group>"; };
 		C8B68171181FF169005931C1 /* YellowBlock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = YellowBlock.png; path = Resources/YellowBlock.png; sourceTree = "<group>"; };
@@ -1063,6 +1067,8 @@
 		C8B67D6E181FEB69005931C1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C8A8225E1821083E00EDD065 /* down.png */,
+				C8A8225F1821083E00EDD065 /* up.png */,
 				C8B6815B181FF169005931C1 /* backscreen00.png */,
 				C8B6815C181FF169005931C1 /* block-type1.png */,
 				C8B6815D181FF169005931C1 /* block-type2.png */,
@@ -1081,8 +1087,8 @@
 				C8B6816A181FF169005931C1 /* RedBlock.png */,
 				C8B6816B181FF169005931C1 /* sideLine.png */,
 				C8B6816C181FF169005931C1 /* threeBlockWidth.png */,
-				C8B6816D181FF169005931C1 /* ToL.png */,
-				C8B6816E181FF169005931C1 /* ToR.png */,
+				C8B6816D181FF169005931C1 /* left.png */,
+				C8B6816E181FF169005931C1 /* right.png */,
 				C8B6816F181FF169005931C1 /* underLine.png */,
 				C8B68170181FF169005931C1 /* unview.png */,
 				C8B68171181FF169005931C1 /* YellowBlock.png */,
@@ -2409,6 +2415,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8A822611821083E00EDD065 /* up.png in Resources */,
 				C8B67D80181FEB69005931C1 /* Icon.png in Resources */,
 				C8B6817E181FF169005931C1 /* hitLine.png in Resources */,
 				C8B6817A181FF169005931C1 /* dobleBlockWidth.png in Resources */,
@@ -2446,11 +2453,12 @@
 				C8B68155181FEB70005931C1 /* effect1.wav in Resources */,
 				C8B68151181FEB70005931C1 /* menu2.png in Resources */,
 				C8B67D72181FEB69005931C1 /* CloseSelected.png in Resources */,
+				C8A822601821083E00EDD065 /* down.png in Resources */,
 				C8B6817B181FF169005931C1 /* GrayBlock.png in Resources */,
 				C8B6814F181FEB70005931C1 /* menu1.png in Resources */,
-				C8B68185181FF169005931C1 /* ToR.png in Resources */,
+				C8B68185181FF169005931C1 /* right.png in Resources */,
 				C8B68177181FF169005931C1 /* block-type5.png in Resources */,
-				C8B68184181FF169005931C1 /* ToL.png in Resources */,
+				C8B68184181FF169005931C1 /* left.png in Resources */,
 				C8B67D82181FEB69005931C1 /* Icon@2x.png in Resources */,
 				C8B68143181FEB70005931C1 /* farm.jpg in Resources */,
 				C8B68149181FEB70005931C1 /* tetris.lua in Resources */,
