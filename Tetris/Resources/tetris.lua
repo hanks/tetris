@@ -278,6 +278,15 @@ local function createGameLayer()
         return gameOver
     end
 
+    -- detect touch on sprite or not    
+    local function containsTouchLocation(sprite, point)
+        local position = ccp(sprite:getPosition())
+        local s = sprite:getTexture():getContentSize()
+        local touchRect = CCRectMake(-s.width / 2 + position.x, -s.height / 2 + position.y, s.width, s.height)
+        local b = touchRect:containsPoint(point)
+        return b
+    end
+
     local function checkGameOver()
         if isGameOver() then
             cclog("game over")
@@ -309,7 +318,27 @@ local function createGameLayer()
     -- add touch event callback
     local function onTouchBegan(x, y)
         cclog("onTouchBegan: %0.2f, %0.2f", x, y)
-        touchBeginPoint = {x = x, y = y}
+        touchBeginPoint = ccp(x, y)
+
+        if containsTouchLocation(UP, touchBeginPoint) == true then
+            cclog("UP")
+            inputDirection = 'up'
+        end
+
+        if containsTouchLocation(DOWN, touchBeginPoint) == true then
+            cclog("DOWN")
+            inputDirection = 'down'
+        end
+
+        if containsTouchLocation(LEFT, touchBeginPoint) == true then
+            cclog("LEFT")
+            inputDirection = 'left'
+        end
+
+        if containsTouchLocation(RIGHT, touchBeginPoint) == true then
+            cclog("RIGHT")
+            inputDirection = 'right'
+        end
         
         -- CCTOUCHBEGAN event must return true
         return true
