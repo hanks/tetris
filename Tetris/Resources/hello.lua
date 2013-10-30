@@ -2,6 +2,10 @@
 -----  User Define Variable --------
 ------------------------------------
 
+-- get screen size
+local visibleSize = CCDirector:sharedDirector():getVisibleSize()
+local origin = CCDirector:sharedDirector():getVisibleOrigin()
+    
 -- 8 type of blokcs
 -- use coordinates, (0, 0) is original point, and other are offset
 local blockType = {
@@ -73,6 +77,8 @@ local stage = 0
 -- filling rows
 local filledRows = {}
 
+-- label
+local score_label
 
 ---------------------------------------------
 ----------       Game Logic     -------------
@@ -87,10 +93,8 @@ function __G__TRACKBACK__(msg)
 end
 
 local cclog = function(...)
-    -- print(string.format(...))
-    print(tostring(...))
+    print(string.format(...))
 end
-
 
 local function resetStateArray()
     for row = 0, MAX_ROW - 1 do
@@ -115,7 +119,7 @@ local function initStateArray()
     -- to make as bound
     for row = 0, MAX_ROW do
         stateArray[row] = {}
-        for col = 0, MAX_COL + 2 do
+        for col = 0, MAX_COL + 1 do
             stateArray[row][col] = 0
         end
     end
@@ -141,8 +145,10 @@ local function createGameLayer()
     
     --フレーム内でチェック
     local function onUpdate(dt)
-
-    end
+        -- update score
+        score_label:setString(tostring(score))
+        
+    end 
 
     local function isGameOver()
         gameOver = false
@@ -219,18 +225,28 @@ local function createGameLayer()
     ---- Game Logic  -------
     ------------------------
     local gameLayer = CCLayer:create()
-
-    -- get screen size
-    local visibleSize = CCDirector:sharedDirector():getVisibleSize()
-    local origin = CCDirector:sharedDirector():getVisibleOrigin()
         
     -- add in game layer background
     local bg = CCSprite:create("backscreen00.png")
     bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
-    gameLayer:addChild(bg)
+    -- gameLayer:addChild(bg)
 
     -- init Game
     initGame()
+    
+    -- init Label UI
+    local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
+    score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
+    gameLayer:addChild(score_str_label)
+
+    -- init score label
+    score_label = CCLabelTTF:create("0", "Arial", 20)
+    score_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 4)
+    gameLayer:addChild(score_label)
+    
+    local next_str_label = CCLabelTTF:create("Next", "Arial", 20)
+    next_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 6)
+    gameLayer:addChild(next_str_label)
 
     -- handing touch events
     local touchBeginPoint = nil
@@ -239,9 +255,9 @@ local function createGameLayer()
     gameLayer:registerScriptTouchHandler(onTouch)
     gameLayer:setTouchEnabled(true)
     
-    -- add update function
+    -- execute update function per frame
     gameLayer:scheduleUpdateWithPriorityLua(onUpdate, 0)
-    
+
     return gameLayer
 end
 
