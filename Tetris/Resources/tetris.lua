@@ -262,10 +262,10 @@ local function getGroundedCenterRow(curRow, curCol)
 end
 
 local function moveBlock2Position(tmpBlock, toRow, toCol)
-    updateStateByBlock (tmpBlock, 0);
-    tmpBlock.centerRow = toRow;
-    tmpBlock.centerCol = toCol;
-    updateStateByBlock (tmpBlock, 1);
+    updateStateByBlock (tmpBlock, 0)
+    tmpBlock.centerRow = toRow
+    tmpBlock.centerCol = toCol
+    updateStateByBlock (tmpBlock, 1)
 end
 
 local function rotation(targetRow, targetCol)
@@ -412,19 +412,19 @@ local function blockMove()
         frameCount = 0
     end
     
-    -- auto horizontal move the whole state array
-    horMoveCount = horMoveCount + 1
-    if horMoveCount > 300 then
-        cclog("horizonal move")
-    	stateArrayHorizontalMovement()
-    	horMoveCount = 0
-    end
-    
     -- move block
     collision = isCollision(toRow, toCol, curBlock)
     if collision == false then
         moveBlock2Position(curBlock, toRow, toCol)
     end
+    
+    -- auto horizontal move the whole state array
+--    horMoveCount = horMoveCount + 1
+--    if horMoveCount > 300 then
+--        cclog("horizonal move")
+--    	stateArrayHorizontalMovement()
+--    	horMoveCount = 0
+--    end
     
     -- is ground
     if isGrounded() then
