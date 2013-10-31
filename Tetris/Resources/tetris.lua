@@ -666,11 +666,11 @@ local function main()
 
     -- play background music, preload effect
     bgMusicPath = CCFileUtils:sharedFileUtils():fullPathForFilename("background.mp3")
-    --SimpleAudioEngine:sharedEngine():playBackgroundMusic(bgMusicPath, true)
+    SimpleAudioEngine:sharedEngine():playBackgroundMusic(bgMusicPath, true)
+    SimpleAudioEngine:sharedEngine():setBackgroundMusicVolume(1)
     
     effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
     SimpleAudioEngine:sharedEngine():preloadEffect(effectPath)
-    --SimpleAudioEngine:sharedEngine():playEffect(effectPath)
 
     local sceneGame = CCScene:create()
 
