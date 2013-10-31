@@ -64,6 +64,9 @@ local RIGHT
 -- frame count timer
 local frameCount = 0
 
+-- filling line count
+local countedFill
+
 -- 8 type of blokcs
 -- use coordinates, (0, 0) is original point, and other are offset
 local blockType = {
@@ -265,6 +268,34 @@ local function rotation(targetRow, targetCol)
     
 end
 
+local function isFillingLine(row) 
+    local flag = true
+    for col = 1, MAX_COL do
+        if stateArray[row][col] == 0 then
+            flag = false
+            break
+        end
+    end
+    return flag
+end
+
+local function setStateArrayByRow(row, val)
+    for col = 1, MAX_COL do
+        stateArray[row][col] = val
+    end
+end
+
+local function checkFilledLines() 
+    local countLines = 0
+    for row = MAX_ROW - 1, 1, -1 do
+        if isFillingLine(row) then
+            filledRows[row] = 1
+            countLines = countLines + 1
+        end
+    then
+    return countLines
+end
+
 local function blockMove()
     resetFilledRows()
     resetGhostBlock()
@@ -309,6 +340,15 @@ local function blockMove()
     	    isFirstGrounded = true
     	    -- record time
     	end
+    	
+    	-- count score
+    	countedFill = checkFilledLines()
+    	if countedFill > 0 then
+    	    score += countedFill * SCORE_PER_LINE
+    	end
+    	
+    	-- delete line
+    	-- TODO
     	
     	-- create new block
     	genNextBlock()
