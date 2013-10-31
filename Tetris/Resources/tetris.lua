@@ -23,10 +23,6 @@ local BLOCK_HEIGHT = 20
 -- score per lien
 local SCORE_PER_LINE = 1000
 
--- position index 
-local col = 0
-local row = 0
-
 -- block reference
 local curBlock
 local nextBlock
@@ -64,6 +60,9 @@ local UP
 local DOWN
 local LEFT
 local RIGHT
+
+-- frame count timer
+local frameCount = 0
 
 -- 8 type of blokcs
 -- use coordinates, (0, 0) is original point, and other are offset
@@ -262,7 +261,7 @@ local function moveBlock2Position(tmpBlock, toRow, toCol)
     updateStateByBlock (tmpBlock, 1);
 end
 
-local function rotation()
+local function rotation(targetRow, targetCol)
     
 end
 
@@ -274,7 +273,9 @@ local function blockMove()
     local toCol = -1
     
     if inputDirection == 'down' then
-        rotation()
+        toRow = curBlock.centerRow
+        toCol = curBlock.centerCol
+        rotation(toRow, toCol)
     elseif inputDirection == 'up' then
         toRow = getGroundedCenterRow(curBlock.centerRow, curBlock.centerCol)
         toCol = curBlock.centerCol
@@ -287,6 +288,14 @@ local function blockMove()
     end
     -- clear input
     inputDirection = ''
+    
+    -- auto move one step one second
+    frameCount = frameCount + 1
+    if frameCount > 60 then
+    	toRow = curBlock.centerRow + 1
+        toCol = curBlock.centerCol
+        frameCount = 0
+    end
     
     -- move block
     collision = isCollision(toRow, toCol, curBlock)
@@ -419,6 +428,11 @@ local function createGameLayer()
         ghostBlock = Block:new(INIT_ROW, INIT_COL)
         nextBlock = Block:new(INIT_ROW, INIT_COL)
 
+		frameCount = 0
+		score = 0	
+        
+        isRunning = true
+        
         -- generate next block
         genNextBlock()
 
