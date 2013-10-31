@@ -11,6 +11,7 @@
 		C8A822611821083E00EDD065 /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = C8A8225F1821083E00EDD065 /* up.png */; };
 		C8A822631822324F00EDD065 /* top.png in Resources */ = {isa = PBXBuildFile; fileRef = C8A822621822324F00EDD065 /* top.png */; };
 		C8A822651822373800EDD065 /* start_button.png in Resources */ = {isa = PBXBuildFile; fileRef = C8A822641822373700EDD065 /* start_button.png */; };
+		C8A822671822561F00EDD065 /* backscreen01.png in Resources */ = {isa = PBXBuildFile; fileRef = C8A822661822561F00EDD065 /* backscreen01.png */; };
 		C8B67D5E181FEB68005931C1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B67D5D181FEB68005931C1 /* QuartzCore.framework */; };
 		C8B67D60181FEB69005931C1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B67D5F181FEB69005931C1 /* OpenGLES.framework */; };
 		C8B67D62181FEB69005931C1 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B67D61181FEB69005931C1 /* OpenAL.framework */; };
@@ -342,6 +343,7 @@
 		C8A8225F1821083E00EDD065 /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = up.png; path = Resources/up.png; sourceTree = "<group>"; };
 		C8A822621822324F00EDD065 /* top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = top.png; path = Resources/top.png; sourceTree = "<group>"; };
 		C8A822641822373700EDD065 /* start_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = start_button.png; path = Resources/start_button.png; sourceTree = "<group>"; };
+		C8A822661822561F00EDD065 /* backscreen01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = backscreen01.png; path = Resources/backscreen01.png; sourceTree = "<group>"; };
 		C8B67D5A181FEB68005931C1 /* Tetris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tetris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8B67D5D181FEB68005931C1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C8B67D5F181FEB69005931C1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1071,6 +1073,7 @@
 		C8B67D6E181FEB69005931C1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C8A822661822561F00EDD065 /* backscreen01.png */,
 				C8A822641822373700EDD065 /* start_button.png */,
 				C8A822621822324F00EDD065 /* top.png */,
 				C8A8225E1821083E00EDD065 /* down.png */,
@@ -2432,6 +2435,7 @@
 				C8B68179181FF169005931C1 /* dobleBlockHight.png in Resources */,
 				C8B68186181FF169005931C1 /* underLine.png in Resources */,
 				C8B68188181FF169005931C1 /* YellowBlock.png in Resources */,
+				C8A822671822561F00EDD065 /* backscreen01.png in Resources */,
 				C8B68153181FEB70005931C1 /* background.mp3 in Resources */,
 				C8A822631822324F00EDD065 /* top.png in Resources */,
 				C8B68127181FEB70005931C1 /* CCBReaderLoad.lua in Resources */,

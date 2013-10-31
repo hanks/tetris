@@ -473,6 +473,11 @@ local function createGameLayer()
 	        -- remove all child
 	        gameLayer:removeAllChildrenWithCleanup(true)
 	        
+	        -- add in game layer background
+    		local bg = CCSprite:create("backscreen01.png")
+    		bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+    		gameLayer:addChild(bg)
+	
 	        -- init Label UI
 	        local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
 	        score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
@@ -631,11 +636,6 @@ local function createGameLayer()
     ------------------------
     gameLayer = CCLayer:create()
         
-    -- add in game layer background
-    local bg = CCSprite:create("backscreen00.png")
-    bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
-    -- gameLayer:addChild(bg)
-
     -- init Game
     initGame()
 
