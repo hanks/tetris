@@ -66,6 +66,7 @@ local RIGHT
 
 -- frame count timer
 local frameCount = 0
+local horMoveCount = 0
 
 -- filling line count
 local countedFill
@@ -175,8 +176,8 @@ local function initStateArray()
 
     -- left and right side bound
     for i = 0, MAX_ROW - 1 do
-        stateArray[i][0] = 1
-        stateArray[i][MAX_COL + 1] = 1
+        stateArray[i][0] = -1
+        stateArray[i][MAX_COL + 1] = -1
     end
 end
 
@@ -348,6 +349,16 @@ local function cascadeMoveDown(targetRow, offset)
     end
 end
 
+local function stateArrayHorizontalMovement()
+    for row = 0, MAX_ROW - 1 do 
+        for col = MAX_COL, 1 , -1 do
+            -- cclog("(%d, %d) : %d", row, col, stateArray[row][col - 1] )
+            -- cclog("(%d, 0) : %d", row, col, stateArray[row][0] )
+        	stateArray[row][col] = stateArray[row][col - 1] 
+    	end
+    end
+end
+
 local function cascade()
    local offset = 0
    for row = MAX_ROW - 1, 2, -1 do
@@ -399,6 +410,14 @@ local function blockMove()
     	toRow = curBlock.centerRow + 1
         toCol = curBlock.centerCol
         frameCount = 0
+    end
+    
+    -- auto horizontal move the whole state array
+    horMoveCount = horMoveCount + 1
+    if horMoveCount > 300 then
+        cclog("horizonal move")
+    	stateArrayHorizontalMovement()
+    	horMoveCount = 0
     end
     
     -- move block
@@ -544,6 +563,7 @@ local function createGameLayer()
         nextBlock = Block:new(INIT_ROW, INIT_COL)
 
 		frameCount = 0
+		horMoveCount = 0
 		score = 0	
         
         isRunning = true
