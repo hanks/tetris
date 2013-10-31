@@ -417,6 +417,8 @@ local function blockMove()
     	-- count score
     	countedFill = checkFilledLines()
     	if countedFill > 0 then
+    	    -- player sound effect
+    	    SimpleAudioEngine:sharedEngine():playEffect(effectPath)
     	    score = score + countedFill * SCORE_PER_LINE
     	end
     	
@@ -638,7 +640,7 @@ local function createMainLayer()
     	cclog("start game")
     	local nextScene = CCScene:create()
     	nextScene:addChild(createGameLayer())
-    	CCDirector:sharedDirector():replaceScene(CCTransitionMoveInL:create(1, nextScene))
+    	CCDirector:sharedDirector():replaceScene(CCTransitionFade:create(0.5, nextScene))
     end
     
     -- add start menu
@@ -668,6 +670,7 @@ local function main()
     
     effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
     SimpleAudioEngine:sharedEngine():preloadEffect(effectPath)
+    --SimpleAudioEngine:sharedEngine():playEffect(effectPath)
 
     local sceneGame = CCScene:create()
 
