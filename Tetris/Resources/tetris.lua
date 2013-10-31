@@ -265,7 +265,55 @@ local function moveBlock2Position(tmpBlock, toRow, toCol)
 end
 
 local function rotation(targetRow, targetCol)
+    local originalDiffRow = {}
+    local originalDiffCol = {}
     
+    -- back diff array
+    for i = 0, 3 do
+        originalDiffRow[i] = curBlock.diffRow[i]
+        originalDiffCol[i] = curBlock.diffCol[i]
+    end
+    
+    -- delete itself
+    updateStateByBlock(curBlock, 0)
+    
+    local newDiffRow = {}
+    local newDiffCol = {}
+    
+    -- rotato diff
+    for i = 0, 3 do
+        newDiffRow[i] = originalDiffCol[i]
+        newDiffCol[i] = -originalDiffRow[i]
+    end
+    
+    -- deteck collisition after rotation
+    -- if has collisition, change diff array
+    -- if no collisition, use new diff array
+    local isCollision = false
+    for i = 0, 3 do
+        local tmpRow = targetRow + newDiffRow[i]
+        local tmpCol = targetCol + newDiffCol[i]
+        if not inField(tmpRow, tmpCol) or stateArray[tmpRow][tmpRow] == 1 then
+            isCollision = true
+        end
+    end
+    
+    if isCollision then
+        -- change back diff array
+        for i = 0, 3 do
+            curBlock.diffRow[i] = originalDiffRow[i]
+            curBlock.diffCol[i] = originalDiffCol[i]
+        end
+    else
+        -- use new diff
+        for i = 0, 3 do
+            curBlock.diffRow[i] = newDiffRow[i]
+            curBlock.diffCol[i] = newDiffCol[i]
+        end
+    end
+    
+    -- set new block to draw
+    updateStateByBlock(curBlock, tBLOCK)
 end
 
 local function isFillingLine(row) 
@@ -292,7 +340,7 @@ local function cascadeMoveDown(targetRow, offset)
     for row = targetRow - offset, 1, -1 do
         for col = 1, MAX_COL do
             stateArray[row][col] = stateArray[row - 1][col]
-            cclog("row is %d, col is %d, value is %d\n", row, col, stateArray[row][col])
+            -- cclog("row is %d, col is %d, value is %d\n", row, col, stateArray[row][col])
         end
     end
 end
