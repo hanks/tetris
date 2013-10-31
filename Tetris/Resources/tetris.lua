@@ -1,6 +1,9 @@
 ------------------------------------
 -----  User Define Variable --------
 ------------------------------------
+-- sound
+local effectPath
+local bgMusicPath
 
 -- get screen size
 local visibleSize = CCDirector:sharedDirector():getVisibleSize()
@@ -624,6 +627,32 @@ local function createGameLayer()
     return gameLayer
 end
 
+local function createMainLayer()
+    local mainLayer = CCLayer:create()
+    local bg = CCSprite:create("top.png")
+    bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
+    mainLayer:addChild(bg)
+    
+    -- start action call back function
+    local function onStartMenu(sender)
+    	cclog("start game")
+    	local nextScene = CCScene:create()
+    	nextScene:addChild(createGameLayer())
+    	CCDirector:sharedDirector():replaceScene(CCTransitionMoveInL:create(1, nextScene))
+    end
+    
+    -- add start menu
+    local item = CCMenuItemImage:create("start_button.png", "start_button.png")
+    item:registerScriptTapHandler(onStartMenu)
+    local menu = CCMenu:create()
+    menu:addChild(item)
+    cclog("%d %d", visibleSize.width, visibleSize.height)
+    menu:setPosition(visibleSize.width / 2, visibleSize.height / 2 - 150)
+    mainLayer:addChild(menu)
+
+    return mainLayer
+end
+
 local function main()
     -- avoid memory leak
     collectgarbage("setpause", 100)
@@ -634,17 +663,16 @@ local function main()
     cclog("result is " .. myadd(3, 5))
 
     -- play background music, preload effect
-    local bgMusicPath = CCFileUtils:sharedFileUtils():fullPathForFilename("background.mp3")
+    bgMusicPath = CCFileUtils:sharedFileUtils():fullPathForFilename("background.mp3")
     --SimpleAudioEngine:sharedEngine():playBackgroundMusic(bgMusicPath, true)
     
-    local effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
+    effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
     SimpleAudioEngine:sharedEngine():preloadEffect(effectPath)
 
     local sceneGame = CCScene:create()
 
     -- add layer
-    sceneGame:addChild(createGameLayer())
-    --sceneGame:addChild(createLayerMenu())
+    sceneGame:addChild(createMainLayer())
     
     -- run game
     CCDirector:sharedDirector():runWithScene(sceneGame)
