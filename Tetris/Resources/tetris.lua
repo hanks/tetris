@@ -262,6 +262,10 @@ local function moveBlock2Position(tmpBlock, toRow, toCol)
     updateStateByBlock (tmpBlock, 1);
 end
 
+local function rotation()
+    
+end
+
 local function blockMove()
     resetFilledRows()
     resetGhostBlock()
@@ -270,14 +274,16 @@ local function blockMove()
     local toCol = -1
     
     if inputDirection == 'down' then
-    
+        rotation()
     elseif inputDirection == 'up' then
         toRow = getGroundedCenterRow(curBlock.centerRow, curBlock.centerCol)
         toCol = curBlock.centerCol
     elseif inputDirection == 'left' then
-    
+        toRow = curBlock.centerRow
+        toCol = curBlock.centerCol - 1
     elseif inputDirection == 'right' then
-    
+        toRow = curBlock.centerRow
+        toCol = curBlock.centerCol + 1
     end
     -- clear input
     inputDirection = ''
