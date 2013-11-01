@@ -665,8 +665,8 @@ local function createMainLayer()
     
     -- create title sprite
     local titleSprite = CCSprite:create("title.png")
-    titleSprite:setAnchorPoint(ccp(0, 0.5))
-    titleSprite:setPosition(visibleSize.width / 2 - 65, visibleSize.height / 2 - 90)
+    titleSprite:setAnchorPoint(ccp(1, 0.5))
+    titleSprite:setPosition(visibleSize.width / 2 + 55, visibleSize.height / 2 - 90)
     mainLayer:addChild(titleSprite)
     
     -- start action call back function
@@ -684,11 +684,42 @@ local function createMainLayer()
     menu:addChild(item)
     cclog("%d %d", visibleSize.width, visibleSize.height)
     menu:setPosition(visibleSize.width / 2, visibleSize.height / 2 - 150)
+    -- set invisible first
+    menu:setVisible(false)
     mainLayer:addChild(menu)
     
-    local frameCount = 0
+    -- set some delay of action
+    local frameCount = -60
+    -- save origianl size of masaic sprite
+    local masaicWidth = masaicSprite:boundingBox().size.width
+    local masaicHeight = masaicSprite:boundingBox().size.height
+    masaicSprite:setVisible(false)
+    
+    -- save original size of title sprite
+    local titleWidth = titleSprite:boundingBox().size.width
+    local titleHeight = titleSprite:boundingBox().size.height
+    -- set title sprite to invisible
+    titleSprite:setVisible(false)
+    
     local function onUpdate()
-    	
+        -- show masaic from left to right
+        frameCount = frameCount + 1
+        -- cclog("%d", frameCount)
+        if frameCount > 0 then
+            if frameCount < masaicWidth then
+	            -- set masaic visible
+	            masaicSprite:setVisible(true)
+	    		masaicSprite:setTextureRect(CCRect(0, 0, frameCount, masaicHeight))
+	    	    -- cclog("(%d, %d)", width, height)
+    		elseif frameCount < masaicWidth + titleWidth then
+	    	    -- set title visible
+	    	    titleSprite:setVisible(true)
+	    	    -- show title from right to left
+	    	    titleSprite:setTextureRect(CCRect(0, 0, frameCount - masaicWidth, titleHeight))
+    		else
+    	    	menu:setVisible(true)
+    		end
+    	end
     end
     
     -- add onUpdate funtion
