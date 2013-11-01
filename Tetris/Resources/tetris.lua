@@ -651,9 +651,23 @@ end
 
 local function createMainLayer()
     local mainLayer = CCLayer:create()
+    
+    -- create bg sprite
     local bg = CCSprite:create("top.png")
     bg:setPosition(visibleSize.width / 2, visibleSize.height / 2)
     mainLayer:addChild(bg)
+    
+    -- create masaic sprite
+    local masaicSprite = CCSprite:create("masaic.png")
+    masaicSprite:setAnchorPoint(ccp(0, 0.5))
+    masaicSprite:setPosition(visibleSize.width / 2 + 10, visibleSize.height / 2 - 25)
+    mainLayer:addChild(masaicSprite)
+    
+    -- create title sprite
+    local titleSprite = CCSprite:create("title.png")
+    titleSprite:setAnchorPoint(ccp(0, 0.5))
+    titleSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2 - 90)
+    mainLayer:addChild(titleSprite)
     
     -- start action call back function
     local function onStartMenu(sender)
@@ -664,13 +678,22 @@ local function createMainLayer()
     end
     
     -- add start menu
-    local item = CCMenuItemImage:create("start_button.png", "start_button.png")
+    local item = CCMenuItemImage:create("start_button_normal.png", "start_button_press.png")
     item:registerScriptTapHandler(onStartMenu)
     local menu = CCMenu:create()
     menu:addChild(item)
     cclog("%d %d", visibleSize.width, visibleSize.height)
     menu:setPosition(visibleSize.width / 2, visibleSize.height / 2 - 150)
     mainLayer:addChild(menu)
+    
+    local frameCount = 0
+    local function onUpdate()
+    	
+    end
+    
+    -- add onUpdate funtion
+    -- execute update function per frame
+    mainLayer:scheduleUpdateWithPriorityLua(onUpdate, 0)
 
     return mainLayer
 end
