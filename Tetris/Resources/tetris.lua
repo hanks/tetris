@@ -4,6 +4,8 @@
 -- sound
 local effectPath
 local bgMusicPath
+local startEffectPath
+local fillLineEffectPath
 
 -- get screen size
 local visibleSize = CCDirector:sharedDirector():getVisibleSize()
@@ -437,7 +439,7 @@ local function blockMove()
     	countedFill = checkFilledLines()
     	if countedFill > 0 then
     	    -- player sound effect
-    	    SimpleAudioEngine:sharedEngine():playEffect(effectPath)
+    	    SimpleAudioEngine:sharedEngine():playEffect(fillLineEffectPath)
     	    score = score + countedFill * SCORE_PER_LINE
     	end
     	
@@ -481,15 +483,18 @@ local function createGameLayer()
 	        -- init Label UI
 	        local score_str_label = CCLabelTTF:create("Score", "Arial", 20)
 	        score_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 2)
+	        score_str_label:setColor(ccc3(0,0,0)); 
 	        gameLayer:addChild(score_str_label)
 	
 	        -- init score label
 	        score_label = CCLabelTTF:create("0", "Arial", 20)
 	        score_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 4)
+	        score_label:setColor(ccc3(0, 0, 0))
 	        gameLayer:addChild(score_label)
 	    
 	        local next_str_label = CCLabelTTF:create("Next", "Arial", 20)
 	        next_str_label:setPosition(visibleSize.width - BLOCK_WIDTH * 2, visibleSize.height - BLOCK_WIDTH * 6)
+	        next_str_label:setColor(ccc3(0, 0, 0))
 	        gameLayer:addChild(next_str_label)
 	        -- update score
 	        score_label:setString(tostring(score))
@@ -672,6 +677,8 @@ local function createMainLayer()
     -- start action call back function
     local function onStartMenu(sender)
     	cclog("start game")
+    	-- player sound effect 
+    	SimpleAudioEngine:sharedEngine():playEffect(startEffectPath)
     	local nextScene = CCScene:create()
     	nextScene:addChild(createGameLayer())
     	CCDirector:sharedDirector():replaceScene(CCTransitionFade:create(0.5, nextScene))
@@ -745,6 +752,14 @@ local function main()
     
     effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
     SimpleAudioEngine:sharedEngine():preloadEffect(effectPath)
+    
+    -- start sound effect
+    startEffectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("start_se.aif")
+    SimpleAudioEngine:sharedEngine():preloadEffect(startEffectPath)
+    
+    -- start sound effect
+    fillLineEffectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("fillLine_se.aif")
+    SimpleAudioEngine:sharedEngine():preloadEffect(fillLineEffectPath)
 
     local sceneGame = CCScene:create()
 
