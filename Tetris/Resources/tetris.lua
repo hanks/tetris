@@ -660,13 +660,13 @@ local function createMainLayer()
     -- create masaic sprite
     local masaicSprite = CCSprite:create("masaic.png")
     masaicSprite:setAnchorPoint(ccp(0, 0.5))
-    masaicSprite:setPosition(visibleSize.width / 2 + 10, visibleSize.height / 2 - 25)
+    masaicSprite:setPosition(visibleSize.width / 2 - 30, visibleSize.height / 2 - 25)
     mainLayer:addChild(masaicSprite)
     
     -- create title sprite
     local titleSprite = CCSprite:create("title.png")
     titleSprite:setAnchorPoint(ccp(0, 0.5))
-    titleSprite:setPosition(visibleSize.width / 2, visibleSize.height / 2 - 90)
+    titleSprite:setPosition(visibleSize.width / 2 - 65, visibleSize.height / 2 - 90)
     mainLayer:addChild(titleSprite)
     
     -- start action call back function
