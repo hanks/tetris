@@ -641,6 +641,9 @@ local function createGameLayer()
     ------------------------
     gameLayer = CCLayer:create()
         
+    -- player start sound effect 
+    	SimpleAudioEngine:sharedEngine():playEffect(startEffectPath)
+    	
     -- init Game
     initGame()
 
@@ -677,8 +680,6 @@ local function createMainLayer()
     -- start action call back function
     local function onStartMenu(sender)
     	cclog("start game")
-    	-- player sound effect 
-    	SimpleAudioEngine:sharedEngine():playEffect(startEffectPath)
     	local nextScene = CCScene:create()
     	nextScene:addChild(createGameLayer())
     	CCDirector:sharedDirector():replaceScene(CCTransitionFade:create(0.5, nextScene))
