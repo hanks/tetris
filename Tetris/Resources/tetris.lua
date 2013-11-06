@@ -339,11 +339,11 @@ local function setStateArrayByRow(row, val)
     end
 end
 
-local function cascadeMoveDown(targetRow, offset)
-    setStateArrayByRow(targetRow - offset, 0)
+local function cascadeMoveUp(targetRow, offset)
+    setStateArrayByRow(targetRow + offset, 0)
     cclog("targetRow is %d, offset is %d\n", targetRow, offset)
     -- move remainder up to recovery
-    for row = targetRow - offset, 1, -1 do
+    for row = targetRow + offset, 1, -1 do
         for col = 1, MAX_COL do
             stateArray[row][col] = stateArray[row - 1][col]
             -- cclog("row is %d, col is %d, value is %d\n", row, col, stateArray[row][col])
@@ -365,7 +365,8 @@ local function cascade()
    local offset = 0
    for row = MAX_ROW - 1, 2, -1 do
        if filledRows[row] == 1 then
-           cascadeMoveDown(row, offset)
+           cclog("row %d is 1", row)
+           cascadeMoveUp(row, offset)
            offset = offset + 1
        end
    end 
@@ -376,6 +377,7 @@ local function checkFilledLines()
     for row = MAX_ROW - 1, 1, -1 do
         if isFillingLine(row) then
             filledRows[row] = 1
+            cclog("row %d is 1", row)
             countLines = countLines + 1
         end
     end
@@ -437,6 +439,7 @@ local function blockMove()
     	
     	-- count score
     	countedFill = checkFilledLines()
+    	cclog("countedFill %d", countedFill)
     	if countedFill > 0 then
     	    -- player sound effect
     	    SimpleAudioEngine:sharedEngine():playEffect(fillLineEffectPath)
