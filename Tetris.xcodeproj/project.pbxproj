@@ -2858,9 +2858,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/ad-in/workspace/ios/Tetris/Tetris/libs/cocos2dx/platform/third_party/ios/libraries",
-					"/Users/ad-in/workspace/ios/Tetris/Tetris/libs/lua/luajit/ios",
-					"/Users/ad-in/workspace/ios/Tetris/Tetris/libs/libwebsockets/ios/lib",
+					/Users/han.zhou/workspace/ios/Tetris/Tetris/libs/cocos2dx/platform/third_party/ios/libraries,
+					/Users/han.zhou/workspace/ios/Tetris/Tetris/libs/lua/luajit/ios,
+					/Users/han.zhou/workspace/ios/Tetris/Tetris/libs/libwebsockets/ios/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -2887,9 +2887,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/ad-in/workspace/ios/Tetris/Tetris/libs/cocos2dx/platform/third_party/ios/libraries",
-					"/Users/ad-in/workspace/ios/Tetris/Tetris/libs/lua/luajit/ios",
-					"/Users/ad-in/workspace/ios/Tetris/Tetris/libs/libwebsockets/ios/lib",
+					/Users/han.zhou/workspace/ios/Tetris/Tetris/libs/cocos2dx/platform/third_party/ios/libraries,
+					/Users/han.zhou/workspace/ios/Tetris/Tetris/libs/lua/luajit/ios,
+					/Users/han.zhou/workspace/ios/Tetris/Tetris/libs/libwebsockets/ios/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
